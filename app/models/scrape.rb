@@ -2,9 +2,9 @@ class Scrape
   attr_accessor :title, :hotness, :image_url, :rating, 
                 :director, :genre, :release_date, :runtime, :synopsis, :failure
 
-  def scrape_new_movie
+  def scrape_new_movie(url)
     begin
-      doc = Nokogiri::HTML(open("https://www.rottentomatoes.com/m/the_magnificent_seven_2016"))
+      doc = Nokogiri::HTML(open(url))
       self.title = doc.css("#movie-title").children[0].text.strip
       self.hotness = doc.css("#all-critics-numbers  span.meter-value").text.to_i
       self.image_url = doc.css("#poster_link > img").attribute("src").value
@@ -25,26 +25,5 @@ class Scrape
       self.failure = "Something went wrong while scraping"
     end 
       
-  end
-
-
-  def save_movie
-    movie = Movie.new(
-      title: self.title,
-      hotness: self.hotness,
-      image_url: self.image_url,
-      synopsis: self.synopsis,
-      rating: self.rating,
-      genre: self.genre,
-      director: self.director,
-      runtime: self.runtime,
-      release_date: self.release_date
-      )
-
-    puts movie.valid?
-    puts "HI"
-    puts movie.errors.full_messages
-
-    movie.save  
   end
 end
